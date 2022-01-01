@@ -1,10 +1,18 @@
-import React from 'react';
+import React, {useContext, useEffect} from 'react';
 import Head from 'next/head';
 import Layout from '../components/Layout';
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
+import authContext from '../context/auth/authContext';
+import Alerta from '../components/Alerta';
 
 const crearcuenta = () => {
+
+    //acceder al state
+    const AuthContext = useContext(authContext);
+    const {registrarUsuario, mensaje} = AuthContext;
+    console.log("mensaje: "+mensaje);
+
     const formik = useFormik({
         initialValues:{
             nombre:'',
@@ -14,10 +22,10 @@ const crearcuenta = () => {
         validationSchema: Yup.object({//schema de validacion con un objeto de yup
             nombre: Yup.string().required('El nombre es obligatorio'),
             email: Yup.string().email('El email no es valido').required('El email es obligatorio'),
-            password: Yup.string().required('La contraseña es obligatoria').min('Contraseña debe tener minimo 6 caracteres')
+            password: Yup.string().required('La contraseña es obligatoria').min(6,'Contraseña debe tener minimo 6 caracteres')
         }),
-        onSubmit: (e) => {//al hacer submit
-            console.log(e);
+        onSubmit: (valores) => {//al hacer submit
+            registrarUsuario(valores);
         }
     });
   return (
@@ -27,6 +35,7 @@ const crearcuenta = () => {
         </Head>
         <div className="md:4/5 xl:w-3/5 mx-auto mb-32">
           <h2 className="text-4xl font-sans font-bold text-gray-800 text-center my-4">Crear cuenta</h2>
+          {mensaje && <Alerta/>? <Alerta/>:console.log('nada que mostrar')}
           <div className="flex justify-center mt-5">
             <div className="w-full max-w-lg">
                 <form 

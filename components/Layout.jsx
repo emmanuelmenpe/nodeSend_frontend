@@ -9,7 +9,7 @@ const Layout = ({children}) => {
         <Fragment>
             <Head>
                 <title>node Send</title>
-                <link href="https://unpkg.com/tailwindcss@2.0.4/dist/tailwind.min.css" rel="stylesheet"/>
+                <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet"/>
             </Head>
             
             <div className="bg-gray-100 min-h-screen">

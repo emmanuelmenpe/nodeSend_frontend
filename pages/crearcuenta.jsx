@@ -10,8 +10,13 @@ const crearcuenta = () => {
 
     //acceder al state
     const AuthContext = useContext(authContext);
-    const {registrarUsuario, mensaje} = AuthContext;
-    console.log("mensaje: "+mensaje);
+    const {registrarUsuario, mensaje, autenticado} = AuthContext;
+
+    useEffect(() => {
+        if (autenticado) {
+            router.push('/');
+        }
+    }, [autenticado])  
 
     const formik = useFormik({
         initialValues:{
@@ -35,7 +40,7 @@ const crearcuenta = () => {
         </Head>
         <div className="md:4/5 xl:w-3/5 mx-auto mb-32">
           <h2 className="text-4xl font-sans font-bold text-gray-800 text-center my-4">Crear cuenta</h2>
-          {mensaje && <Alerta/>? <Alerta/>:console.log('nada que mostrar')}
+          {mensaje && <Alerta/>? <Alerta/>:null}
           <div className="flex justify-center mt-5">
             <div className="w-full max-w-lg">
                 <form 

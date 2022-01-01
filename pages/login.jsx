@@ -1,10 +1,23 @@
-import React from 'react';
+import React, {useContext, useEffect} from 'react';
+import { useRouter } from "next/router";
 import Head from 'next/head';
 import Layout from '../components/Layout';
 import {useFormik} from 'formik';
 import * as Yup from 'yup';
+import authContext from '../context/auth/authContext';
+import Alerta from '../components/Alerta';
 
 const login = () => {
+    const router = useRouter();
+    const AuthContext = useContext(authContext);
+    const {mensaje,autenticado, iniciarSesion } = AuthContext;
+
+    useEffect(() => {
+        if (autenticado) {
+            router.push('/');
+        }
+    }, [autenticado])
+
     const formik = useFormik({
         initialValues:{
             email:'',
@@ -14,8 +27,8 @@ const login = () => {
             email: Yup.string().email('El email no es valido').required('El email es obligatorio'),
             password: Yup.string().required('La contraseña es obligatoria')
         }),
-        onSubmit: (e) => {//al hacer submit
-            console.log(e);
+        onSubmit: (valores) => {//al hacer submit
+            iniciarSesion(valores); 
         }
     });
 
@@ -26,9 +39,13 @@ const login = () => {
         </Head>
         <div className="md:4/5 xl:w-3/5 mx-auto mb-32">
           <h2 className="text-4xl font-sans font-bold text-gray-800 text-center my-4">Iniciar sesión</h2>
+          {mensaje && <Alerta/>? <Alerta/>:null}
           <div className="flex justify-center mt-5">
             <div className="w-full max-w-lg">
-                <form action="" className="bg-white rounded shadow-md px-8 pt-6 pb-8 md-4">
+                <form 
+                    className="bg-white rounded shadow-md px-8 pt-6 pb-8 md-4"
+                    onSubmit={formik.handleSubmit}
+                >
                     <div className="mb-4">
                         <label 
                             htmlFor="email" 

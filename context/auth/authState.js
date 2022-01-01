@@ -6,12 +6,20 @@ import {
     REGISTRO_EXITOSO,
     REGISTRO_ERROR,
     LIMPIAR_ALERTA,
+    LOGIN_EXITOSO,
+    LOGIN_ERROR,
+    USUARIO_AUTENTICADO,
+    CERRAR_SESION
 } from "../../types";
+import tokenAuth from "../../config/tokenAuth";
 
 const AuthState = ({children}) => {//ó (props)
 
     const initialState = {
-        token:'',
+        /* next corre en el cliente y servidor, en el servidor no existe locaStorage.
+            se hace una evaluacio para ver si window no esta indefinida
+        */
+        token: typeof window !== 'undefined'? localStorage.getItem('token') : '',
         autenticado:null,
         usuario:null,
         mensaje:null
@@ -22,7 +30,7 @@ const AuthState = ({children}) => {//ó (props)
     const registrarUsuario = async (datos) => {
         try {
             const respuesta = await clienteAxios.post('/api/usuarios',datos);
-
+            console.log(respuesta);
             dispatch({
                 type: REGISTRO_EXITOSO,
                 payload:respuesta.data.msg
@@ -42,11 +50,56 @@ const AuthState = ({children}) => {//ó (props)
         }, 3000);
     }
 
-    const usuarioAutenticado = (nombre) => {
+    const iniciarSesion = async (datos) => {
+        try {
+            const respuesta = await clienteAxios.post('/api/auth',datos);
+            dispatch({
+                type: LOGIN_EXITOSO,
+                payload:respuesta.data.token
+            });
+        } catch (error) {
+            dispatch({
+                type: LOGIN_ERROR,
+                payload:error.response.data.msg
+            });
+            setTimeout(() => {
+                dispatch({
+                    type: LIMPIAR_ALERTA
+                })
+            }, 3000);
+        }
+    }
+
+    const usuarioAutenticado = async(nombre) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            tokenAuth(token);    
+        }
+
+        try {
+            const respuesta = await clienteAxios.get('/api/auth');
+            
+            dispatch({
+                type: USUARIO_AUTENTICADO,
+                payload: respuesta.data.usuario
+            });
+        } catch (error) {
+            dispatch({
+                type: LOGIN_ERROR,
+                payload:error.response.data.msg
+            });
+            setTimeout(() => {
+                dispatch({
+                    type: LIMPIAR_ALERTA
+                })
+            }, 3000);
+        }
+    }
+
+    const cerrarSesion = async () => {
         dispatch({
-            type: USUARIO_AUTENTICADO,
-            payload:nombre
-        });
+            type: CERRAR_SESION
+        })
     }
 
     return(
@@ -57,7 +110,9 @@ const AuthState = ({children}) => {//ó (props)
                 usuario:state.usuario,
                 mensaje:state.mensaje,
                 registrarUsuario,
-                usuarioAutenticado 
+                iniciarSesion,
+                usuarioAutenticado,
+                cerrarSesion
             }}
         >
             {children}

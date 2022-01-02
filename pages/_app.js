@@ -2,11 +2,14 @@
 import React from 'react'
 import '../styles/globals.css'
 import AuthState from '../context/auth/authState'
+import AppState from '../context/app/appState'
 
 function MyApp({ Component, pageProps }) {
-  return <AuthState>
-      <Component {...pageProps} />
-  </AuthState>
+  return <AppState>
+    <AuthState>
+        <Component {...pageProps} />
+    </AuthState>
+  </AppState>
 }
 
 export default MyApp

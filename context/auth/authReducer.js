@@ -1,7 +1,7 @@
 import { 
     REGISTRO_EXITOSO,
     REGISTRO_ERROR,
-    LIMPIAR_ALERTA,
+    OCULTAR_ALERTA,
     LOGIN_EXITOSO,
     LOGIN_ERROR,
     USUARIO_AUTENTICADO,
@@ -13,12 +13,12 @@ export default (state, action) => {
         case REGISTRO_ERROR:
         case LOGIN_ERROR:
         case REGISTRO_EXITOSO:
-            localStorage.setItem('token', action.payload);
+            //localStorage.setItem('token', action.payload);
             return{
                 ...state,
                 mensaje: action.payload
             }
-        case LIMPIAR_ALERTA:
+        case OCULTAR_ALERTA:
             return{
                 ...state,
                 mensaje: null,
@@ -38,7 +38,7 @@ export default (state, action) => {
 
             } 
         case CERRAR_SESION:
-            localStorage.removeItem('token');co
+            localStorage.removeItem('token');
             return{
                 ...state,
                 usuario: null,

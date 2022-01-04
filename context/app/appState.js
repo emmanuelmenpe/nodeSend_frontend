@@ -9,7 +9,8 @@ import {
     SUBIR_ARCHIVO_EXITO,
     CREAR_ENLACE_EXITO,
     SUBIR_ARCHIVO_ERROR,
-    CREAR_ENLACE_ERROR
+    CREAR_ENLACE_ERROR,
+    LIMIPAR_STATE
 } from '../../types'
 
 const AppState = ({children}) => {
@@ -74,9 +75,16 @@ const AppState = ({children}) => {
                 type:CREAR_ENLACE_EXITO,
                 payload: resultado.data.msg
             })
+            console.log('enlace creado');
         } catch (error) {
             console.log(error);
         }
+    }
+
+    const limpiarState = () => {
+        payload({
+            type: LIMIPAR_STATE
+        })
     }
 
 
@@ -93,7 +101,8 @@ const AppState = ({children}) => {
                 url:state.url,
                 mostrarAlerta,
                 subirArchivo,
-                crearEnlace
+                crearEnlace,
+                limpiarState
             }}
         >
             {children}

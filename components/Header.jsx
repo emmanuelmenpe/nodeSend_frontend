@@ -1,21 +1,35 @@
 import React, {useContext, useEffect, Fragment} from 'react';
 import Link from 'next/link';
 import authContext from '../context/auth/authContext';
+import appContext from '../context/app/appContext';
+import {useRouter} from 'next/router';
 
 const Header = () => {
+    const router = useRouter();
 
     const AuthContext = useContext(authContext);
     const {usuario, autenticado, token, cerrarSesion} = AuthContext;
+
+    const AppContext = useContext(appContext);
+    const {limpiarState} = AppContext;
 
     useEffect(() => {
         usuario;
     }, []);
 
+    const redireccionar = () => {
+        router.push('/');
+        limpiarState();
+    }
+
     return (
         <div className="py-8 flex flex-col md:flex-row items-center justify-between">
-            <Link href="/">
-                <img src="logo.svg" alt="LOGO" className='w-64 md:mb-0' />
-            </Link>
+                <img 
+                    onClick={()=>redireccionar()}
+                    src="/logo.svg" 
+                    alt="LOGO" 
+                    className='w-64 md:mb-0 cursor-pointer' 
+                />            
             <div>
                 {
                     usuario && autenticado && token?

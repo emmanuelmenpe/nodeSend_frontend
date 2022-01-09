@@ -14,7 +14,10 @@ const index = () => {
   const {mensaje_archivo, url} = Appcontext;
 
   useEffect(() => {
-    usuarioAutenticado();
+    const token = localStorage.getItem('token');
+    if (token) {
+      usuarioAutenticado();  
+    }
   }, []);
 
   return (
